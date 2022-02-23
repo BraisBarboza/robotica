@@ -1,57 +1,63 @@
 #pragma config(StandardModel, "EV3_REMBOT")
-const int Limitdistance = 15;
+const int Limitdistance = 20;
 int currentDistance = 0;
-TEV3LEDPatterns color=ledOrange;
-int direccion;
 
-
-task giroTiempo()
+void stop_movement()
 {
-	direccion= rand() % 2;
-	if(direccion)
-	{
+		setMotorSpeed(leftMotor, 0);
+		setMotorSpeed(rightMotor, 0);
+}
+void default_movement()
+{
 		setMotorSpeed(leftMotor, 50);
-		setMotorSpeed(rightMotor, -50);
-	}else
-	{
-		setMotorSpeed(leftMotor, -50);
 		setMotorSpeed(rightMotor, 50);
-	}
-	sleep(1000);
 }
-task giroGrados(int direccion)
+void giro_grados_izquierda(int grados)
 {
-	direccion= rand() % 2;
-	if(direccion)
+	int current_degrees;
+	resetGyro(gyroSensor);
+	current_degrees=getGyroDegrees(gyroSensor);
+	while(current_degrees>=grados)
 	{
-		setMotorTarget(leftMotor, 30, 50);
-	}else
-	{
-		setMotorTarget(rightMotor, 30, 50);
+		current_degrees=getGyroDegrees(gyroSensor);
+		setMotorSpeed(rightMotor, 30);
 	}
-
 }
-
+void giro_grados_derecha(int grados)
+{
+	int current_degrees;
+	resetGyro(gyroSensor);
+	current_degrees=getGyroDegrees(gyroSensor);
+	while(current_degrees<=grados)
+	{
+		current_degrees=getGyroDegrees(gyroSensor);
+		setMotorSpeed(leftMotor, 30);
+	}
+}
 task main()
 {
-	setMotorSpeed(leftMotor, 50);
-	setMotorSpeed(rightMotor, 50);
-	currentDistance= SensorValue[cont];
+	default_movement();
 	while (true)
 	{
 		currentDistance= SensorValue[sonarSensor];
-		if (currentDistance<=2*Limitdistance)
+		if(Limitdistance>=currentDistance)
 		{
-			setLEDColor(color);
+			stop_movement();
+			giro_grados_derecha(90);
+			default_movement();
+
+
 		}
-		if (getTouchValue(touchSensor))
-		{
-			setMotorSpeed(leftMotor, -50);
-			setMotorSpeed(rightMotor, -50);
-			sleep(2000);
-			giroTiempo();
-			setMotorSpeed(leftMotor, 50);
-			setMotorSpeed(rightMotor, 50);
-		}
+		if(currentDistance>=Limitdistance){
+				sleep(1000);
+				giro_grados_izquierda(-90);
+				while(SensorValue[sonarSensor]>=Limitdistance)
+				{
+					default_movement();
+				}
+				stop_movement();
+				giro_grados_derecha(90);
+				default_movement();
+			}
 	}
 }
