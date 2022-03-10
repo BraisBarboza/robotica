@@ -8,88 +8,94 @@ int canIWork(int asked_priority){
 		return 0;
 }
 void doneWorking(int priority){
-	currentPriority--;
-}
-/*
-task escapar(){
-	const int LimitDistance = 30;
-	while(true){
-		currentDistance= SensorValue[sonarSensor];
-		if(currentDistance<10){
-			if(canIWok(3)){
-				setMotorSpeed(leftMotor, -50);
-				setMotorSpeed(rightMotor, -50);
-			}
-		}
+	if(priority>0){
+		currentPriority--;
 	}
-}*/
+}
+
+int measure(){
+	int tiempo=0;
+	int i=0;
+	int valor=0;
+	clearTimer(T1);
+	tiempo= getTimerValue(T1);
+  while(tiempo<100){
+  	valor=valor+SensorValue[sonarSensor];
+  	i++;
+  	tiempo= getTimerValue(T1);
+  	 setMotorSpeed(leftMotor, 0);
+		setMotorSpeed(rightMotor, 0);
+  }
+  valor=valor/i;
+  return valor;
+}
 
 task buscarPared(){
-	const int LimitDistance = 20;
+	const int LimitDistance = 35;
 	int currentDistance = 0;
 	int const myPriority=0;
+	int tiempo=0;
 	while(true){
 		if (canIWork(myPriority)){
-			currentDistance= SensorValue[sonarSensor];
+			currentDistance= measure();
 			while(currentDistance>LimitDistance){
-				setMotorSpeed(leftMotor, 70);
-				setMotorSpeed(rightMotor, 50);
-				currentDistance= SensorValue[sonarSensor];
+				clearTimer(T2);
+				tiempo= getTimerValue(T2);
+  			while(tiempo<1000){
+  				setMotorSpeed(leftMotor, 30);
+					setMotorSpeed(rightMotor, 50);
+					tiempo= getTimerValue(T2);
+  			}
+				currentDistance=measure();
 			}
+			doneWorking(myPriority);
 		}else abortTimeslice();
-		doneWorking(myPriority);
+
 	}
 
 }
 
 task seguirPared(){
-	const int LimitDistance = 20;
+	const int LimitDistance = 35;
 	int currentDistance=0;
 	int const myPriority=1;
 	while(true){
 		currentDistance=SensorValue[sonarSensor];
 		if(currentDistance<=LimitDistance){
 			if (canIWork(myPriority)){
-				resetGyro(gyroSensor);
-				while(currentDistance<=LimitDistance || getGyroDegrees(gyroSensor)>-60){
-					currentDistance=SensorValue[sonarSensor];
-					setMotorSpeed(leftMotor, -50);
-					setMotorSpeed(rightMotor, 50);
+      	resetGyro(gyroSensor);
+				while(currentDistance<=LimitDistance || getGyroDegrees(gyroSensor)<60){
+					currentDistance=measure();
+					setMotorSpeed(leftMotor, 50);
+					setMotorSpeed(rightMotor, -50);
 				}
-				setMotorSpeed(leftMotor, 70);
-				setMotorSpeed(rightMotor, 40);
+				setMotorSpeed(leftMotor, 40);
+				setMotorSpeed(rightMotor, 60);
 			}
 			doneWorking(myPriority);
+
 		}
 	}
 }
 task irLuz(){
 	int const myPriority=2;
-	int defaultLight=0;
 	int currentLight=0;
-	defaultLight=getColorAmbient(colorSensor);
 	while(true){
 		currentLight=getColorAmbient(colorSensor);
-		//if(defaultLight!=currentLight){
+		//if(currentLight<60){
 		if(getColorName(colorSensor)==colorRed){
 			if (canIWork(myPriority)){
 				setMotorSpeed(leftMotor, 50);
 				setMotorSpeed(rightMotor, 50);
-				/*
-				while(currentLight<defaultLight){
-					setMotorSpeed(leftMotor, -20);
-					setMotorSpeed(rightMotor, 20);
-				}
-				setMotorSpeed(leftMotor, 50);
-				setMotorSpeed(rightMotor, 50);
-			*/}
-			doneWorking(myPriority);
+				doneWorking(myPriority);
+			}
+
 		}
 	}
 }
 task escapar(){
 	int const myPriority=3;
-	int minDistance=15;
+	int minDistance=30;
 	int currentDistance=0;
 	int touching=0;
 	while(true){
@@ -102,9 +108,9 @@ task escapar(){
 					setMotorSpeed(rightMotor, -20);
 					currentDistance=SensorValue[sonarSensor];
 				}
-
+				doneWorking(myPriority);
 			}
-			doneWorking(myPriority);
+
 		}
 	}
 }
@@ -113,8 +119,8 @@ task main()
 	clearDebugStream();
 	startTask(buscarPared);
 	startTask(seguirPared);
-	startTask(irLuz);
-	startTask(escapar);
+	//startTask(irLuz);
+	//startTask(escapar);
 	while(true){
 	}
 }
