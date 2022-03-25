@@ -61,7 +61,7 @@ Wall {
 Khepera4 {
   translation -0.610241 -7.94701e-05 -1.14305
   rotation -0.5773490918272008 -0.5773506256603425 -0.5773510900794399 2.0943961664596453
-  controller ""
+  controller "<extern>"
 }
 Wall {
   translation -0.186021 0.0499996 0.600003
