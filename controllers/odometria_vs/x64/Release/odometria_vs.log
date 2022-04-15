@@ -1,22 +1,24 @@
 ﻿  odometria_vs.c
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(255,15): warning C4047: 'función': 'int (*)[40]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[40][40]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(255,11): warning C4024: 'init_map': tipos distintos para el parámetro formal y el parámetro real 1
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(259,61): warning C4047: 'función': 'WbDeviceTag *' es distinto en los niveles de direccionamiento indirecto de 'WbDeviceTag (*)[4]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(259,44): warning C4024: 'enable_sensors': tipos distintos para el parámetro formal y el parámetro real 3
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(292,44): warning C4047: 'función': 'int' es distinto en los niveles de direccionamiento indirecto de 'int *'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(292,33): warning C4024: 'update_map': tipos distintos para el parámetro formal y el parámetro real 2
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(292,50): warning C4047: 'función': 'int (*)[40]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[40][40]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(292,46): warning C4024: 'update_map': tipos distintos para el parámetro formal y el parámetro real 3
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(293,21): warning C4047: 'función': 'int (*)[40]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[40][40]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(293,17): warning C4024: 'print_matrix': tipos distintos para el parámetro formal y el parámetro real 1
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,31): warning C4047: 'función': 'int' es distinto en los niveles de direccionamiento indirecto de 'int *'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,20): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 1
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,37): warning C4047: 'función': 'int (*)[40]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[40][40]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,33): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 2
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,48): warning C4047: 'función': 'int *' es distinto en los niveles de direccionamiento indirecto de 'int (*)[2]'
-C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(296,39): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 3
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(269,15): warning C4047: 'función': 'int (*)[15]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[15][15]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(269,11): warning C4024: 'init_map': tipos distintos para el parámetro formal y el parámetro real 1
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(273,61): warning C4047: 'función': 'WbDeviceTag *' es distinto en los niveles de direccionamiento indirecto de 'WbDeviceTag (*)[4]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(273,44): warning C4024: 'enable_sensors': tipos distintos para el parámetro formal y el parámetro real 3
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(305,50): warning C4047: 'función': 'int (*)[15]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[15][15]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(305,46): warning C4024: 'update_map': tipos distintos para el parámetro formal y el parámetro real 3
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(305,70): warning C4047: 'función': 'int *' es distinto en los niveles de direccionamiento indirecto de 'int (*)[4]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(305,62): warning C4024: 'update_map': tipos distintos para el parámetro formal y el parámetro real 5
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(308,21): warning C4047: 'función': 'int (*)[15]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[15][15]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(308,17): warning C4024: 'print_matrix': tipos distintos para el parámetro formal y el parámetro real 1
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(331,39): warning C4047: 'función': 'int (*)[15]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[15][15]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(331,35): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 2
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(331,50): warning C4047: 'función': 'int *' es distinto en los niveles de direccionamiento indirecto de 'int (*)[2]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(331,41): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 3
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(346,39): warning C4047: 'función': 'int (*)[15]' es distinto en los niveles de direccionamiento indirecto de 'int (*)[15][15]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(346,35): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 2
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(346,50): warning C4047: 'función': 'int *' es distinto en los niveles de direccionamiento indirecto de 'int (*)[2]'
+C:\Users\Brais\Documents\Repositorios\robotica\controllers\odometria_vs\odometria_vs.c(346,41): warning C4024: 'locate_forward': tipos distintos para el parámetro formal y el parámetro real 3
   Generando código
-  5 of 11 functions (45.5%) were compiled, the rest were copied from previous compilation.
+  2 of 12 functions (16.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Generación de código finalizada

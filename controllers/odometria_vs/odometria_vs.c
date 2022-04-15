@@ -10,6 +10,7 @@
   * You may need to add include files like <webots/distance_sensor.h> or
   * <webots/motor.h>, etc.
   */
+#include <stdio.h>
 #include <webots/robot.h>
 #include <webots/motor.h>
 #include <webots/position_sensor.h>
@@ -27,7 +28,7 @@
 #define CRUISE_SPEED 0.628
 #define SENSOR_SAMPLING_PERIOD 1
 #define DELTA 2.58
-#define MATRIX_LIMIT 40
+#define MATRIX_LIMIT 15
 #define WALL_THRESHOLD 230.000
    /*
    * This is the main program.
@@ -57,18 +58,27 @@ void advance1(WbDeviceTag left_motor, WbDeviceTag left_sensor, WbDeviceTag right
 	wb_motor_set_position(left_motor, wb_position_sensor_get_value(left_sensor) + CELL_SIZE / WHEEL_RADIX);
 	wb_motor_set_position(right_motor, wb_position_sensor_get_value(right_sensor) + CELL_SIZE / WHEEL_RADIX);
 }
-void turn(WbDeviceTag left_motor, WbDeviceTag right_motor, int direction, double before_movement_sensor_state[]) {
+void turn(WbDeviceTag left_motor, WbDeviceTag left_sensor, WbDeviceTag right_motor, WbDeviceTag right_sensor, int *orientation, int direction) {
+
 	if (!direction)
 	{
-		wb_motor_set_position(left_motor, -PI / 2 * DELTA + before_movement_sensor_state[0]);
-		wb_motor_set_position(right_motor, PI / 2 * DELTA + before_movement_sensor_state[1]);
+		wb_motor_set_position(left_motor, -PI / 2 * DELTA + wb_position_sensor_get_value(left_sensor));
+		wb_motor_set_position(right_motor, PI / 2 * DELTA + wb_position_sensor_get_value(right_sensor));
+		*orientation = *orientation+1;
+		*orientation = *orientation % 4;
 	}
 	else
 	{
-
-		wb_motor_set_position(left_motor, PI / 2 * DELTA + before_movement_sensor_state[0]);
-		wb_motor_set_position(right_motor, -PI / 2 * DELTA + before_movement_sensor_state[1]);
+		wb_motor_set_position(left_motor, PI / 2 * DELTA + wb_position_sensor_get_value(left_sensor));
+		wb_motor_set_position(right_motor, -PI / 2 * DELTA + wb_position_sensor_get_value(right_sensor));
+		*orientation = *orientation - 1;
+		if (*orientation==-1)
+		{
+			*orientation = 3;
+		}
+		*orientation = *orientation % 4;
 	}
+	printf("%d\n", *orientation);
 	//printf("%f\n", -PI / 2 * DELTA + before_movement_sensor_state[0]);
 }
 
@@ -109,12 +119,13 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 					map[location[0]][location[1] - 1] = map_value;
 
 					break;
+
 				case 2:
-					map[location[0]][location[1] + 1] = map_value;
+					map[location[0] + 1][location[1]] = map_value;
 
 					break;
 				case 3:
-					map[location[0] + 1][location[1]] = map_value;
+					map[location[0]][location[1] + 1] = map_value;
 
 					break;
 				default:
@@ -127,22 +138,22 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 		for (int i = 0; i < 4; i++)
 		{
 			map_value = wb_distance_sensor_get_value(infrared_sensors[i]) > WALL_THRESHOLD;
-			blocked[i] = !map_value;
+			blocked[i] = map_value;
 				switch (i)
 				{
 				case 0:
 					map[location[0]][location[1] - 1] = map_value;
 					break;
 				case 1:
-					map[location[0] - 1][location[1]] = map_value;
-
-					break;
-				case 2:
 					map[location[0] + 1][location[1]] = map_value;
 
 					break;
+				case 2:
+					map[location[0]][location[1]+1] = map_value;
+
+					break;
 				case 3:
-					map[location[0]][location[1] + 1] = map_value;
+					map[location[0]-1][location[1]] = map_value;
 
 					break;
 				default:
@@ -155,14 +166,14 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 		for (int i = 0; i < 4; i++)
 		{
 			map_value = wb_distance_sensor_get_value(infrared_sensors[i]) > WALL_THRESHOLD;
-			blocked[i] = !map_value;
+			blocked[i] = map_value;
 				switch (i)
 				{
 				case 0:
-					map[location[0]][location[1] + 1] = map_value;
+					map[location[0]+1][location[1] ] = map_value;
 					break;
 				case 1:
-					map[location[0] + 1][location[1]] = map_value;
+					map[location[0]][location[1]+1] = map_value;
 
 					break;
 				case 2:
@@ -183,14 +194,14 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 		for (int i = 0; i < 4; i++)
 		{
 			map_value = wb_distance_sensor_get_value(infrared_sensors[i]) > WALL_THRESHOLD;
-			blocked[i] = !map_value;
+			blocked[i] = map_value;
 				switch (i)
 				{
 				case 0:
-					map[location[0] + 1][location[1]] = map_value;
+					map[location[0]][location[1]+1] = map_value;
 					break;
 				case 1:
-					map[location[0]][location[1] + 1] = map_value;
+					map[location[0]-1][location[1]] = map_value;
 
 					break;
 				case 2:
@@ -198,7 +209,7 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 
 					break;
 				case 3:
-					map[location[0] - 1][location[1]] = map_value;
+					map[location[0] + 1][location[1]] = map_value;
 					break;
 				default:
 					break;
@@ -216,22 +227,25 @@ void locate_forward(int orientation, int map[][MATRIX_LIMIT], int location[]) {
 	switch (orientation)
 	{
 	case 0:
-		map[location[0] - 1][location[1]] = 2;
 		location[0] = location[0] - 1;
+		map[location[0]][location[1]] = 2;
 		break;
 	case 1:
-		map[location[0]][location[1] - 1] = 2;
-		location[1] = location[1]-1;
+		location[1] = location[1] - 1;
+		map[location[0]][location[1]] = 2;
+		
 
 		break;
 	case 2:
-		map[location[0]][location[1] + 1] = 2;
-		location[1] = location[1]+1;
+		location[1] = location[0] + 1;
+		map[location[0]][location[1]] = 2;
+		
 
 		break;
 	case 3:
-		map[location[0] + 1][location[1]] = 2;
-		location[0] = location[0] + 1;
+		location[0] = location[1] + 1;
+		map[location[0]][location[1]] = 2;
+		
 		break;
 	default:
 		break;
@@ -246,12 +260,12 @@ int main(int argc, char** argv) {
 	WbDeviceTag right_motor = wb_robot_get_device("right wheel motor");
 	WbDeviceTag left_sensor = wb_robot_get_device("left wheel sensor");
 	WbDeviceTag right_sensor = wb_robot_get_device("right wheel sensor");
-	WbDeviceTag infrared_sensors[4] = { wb_robot_get_device("front infrared sensor") , wb_robot_get_device("left infrared sensor") ,wb_robot_get_device("right infrared sensor") ,wb_robot_get_device("rear infrared sensor") };
+	WbDeviceTag infrared_sensors[4] = { wb_robot_get_device("front infrared sensor") , wb_robot_get_device("left infrared sensor") ,wb_robot_get_device("rear infrared sensor") ,wb_robot_get_device("right infrared sensor") };
 
 	int blocked[4] = { 0,0,0,0 };
 	int map[MATRIX_LIMIT][MATRIX_LIMIT];
-	int* orientation;
-	orientation = 0;
+	int orientation = 0;
+	int wall_found = 0;
 	init_map(&map);
 	int location[2] = { MATRIX_LIMIT / 2,MATRIX_LIMIT / 2 };
 	int initial_location[2] = {location[0],location[1]};
@@ -286,20 +300,59 @@ int main(int argc, char** argv) {
 		  * Enter here functions to send actuator commands, like:
 		  * wb_motor_set_position(my_actuator, 10.0);
 		  */
-		  
-		if (stopped(left_motor, left_sensor,right_motor,right_sensor))
+		if (stopped(left_motor, left_sensor, right_motor, right_sensor))
 		{
-			update_map(infrared_sensors, orientation, &map, location, blocked);
-			print_matrix(&map);
-			if (!blocked[0]) {
-				advance1(left_motor,left_sensor, right_motor,right_sensor);
-				locate_forward(orientation, &map, &location);
-			}
-			//turn(left_motor, right_motor, 0, &before_movement_sensor_state);
-		}
-		else
-		{
+			update_map(infrared_sensors, orientation, &map, location, &blocked);
 			
+			//printf("%d,%d,%d,%d\n", blocked[0], blocked[1], blocked[2], blocked[3]);
+			print_matrix(&map);
+			if (!wall_found)
+			{
+				if (blocked[3])
+				{
+					wall_found = 1;
+				}
+				else
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						if (blocked[i])
+						{
+							if (stopped(left_motor, left_sensor, right_motor, right_sensor))
+							{
+								turn(left_motor, left_sensor, right_motor, right_sensor, &orientation, 1);
+							}
+						}
+					}
+
+					if (stopped(left_motor, left_sensor, right_motor, right_sensor))
+					{
+						advance1(left_motor, left_sensor, right_motor, right_sensor);
+						locate_forward(orientation, &map, &location);
+					}
+				}
+			}
+			else
+			{
+				if (!blocked[3])
+				{
+					turn(left_motor, left_sensor, right_motor, right_sensor, &orientation, 1);
+				}
+				else
+				{
+					if (!blocked[0])
+					{
+						advance1(left_motor, left_sensor, right_motor, right_sensor);
+						locate_forward(orientation, &map, &location);
+					}
+					else
+					{
+						turn(left_motor, left_sensor, right_motor, right_sensor, &orientation, 0);
+					}
+				}
+			}
+
+			//turn(left_motor, right_motor, 0, &before_movement_sensor_state);
 		}
 
 	sensors_previous_position[0] = wb_position_sensor_get_value(left_sensor);
