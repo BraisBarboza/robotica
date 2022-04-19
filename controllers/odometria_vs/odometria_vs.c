@@ -32,7 +32,7 @@
 #define MATRIX_LIMIT 30
 #define WALL_THRESHOLD 190.000
 #define EPSILON 0.01
-#define GOAL_BLUE_THRESHOLD 150000
+#define GOAL_BLUE_THRESHOLD 15000
    /*
    * This is the main program.
    * The arguments of the main function can be specified by the
@@ -129,8 +129,10 @@ int is_goal(WbDeviceTag camera) {
 			b += wb_camera_image_get_blue(image, image_width, x, y);
 			
 		}
+	printf("%d, %d, %d\n", r, g, b);
 	return b<GOAL_BLUE_THRESHOLD;
 }
+
 void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRIX_LIMIT], int location[], int blocked[], int goal_location[]) {
 	map[location[0]][location[1]] = 2;
 	int map_value;
@@ -146,20 +148,21 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 				switch (i)
 				{
 				case 0:
-					map[location[0] - 1][location[1]] = map_value;
+					map[location[0] - 1][location[1]]=(map[location[0] - 1][location[1]] == -1) ? map_value : map[location[0] - 1][location[1]];
+					blocked[i] = map[location[0] - 1][location[1]];
 					break;
 				case 1:
-					map[location[0]][location[1] - 1] = map_value;
-
+					map[location[0]][location[1] - 1]= (map[location[0] ][location[1]-1] == -1) ? map_value : map[location[0] ][location[1]-1];
+					blocked[i] = map[location[0]][location[1]-1];
 					break;
 
 				case 2:
-					map[location[0] + 1][location[1]] = map_value;
-
+					map[location[0] + 1][location[1]]=(map[location[0] + 1][location[1]] == -1) ? map_value : map[location[0] + 1][location[1]];
+					blocked[i] = map[location[0] +1][location[1]];
 					break;
 				case 3:
-					map[location[0]][location[1] + 1] = map_value;
-
+					map[location[0]][location[1] + 1]=(map[location[0]][location[1]+1] == -1) ? map_value : map[location[0] ][location[1]+1];
+					blocked[i] = map[location[0]][location[1]+1];
 					break;
 				default:
 					break;
@@ -175,18 +178,22 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 				switch (i)
 				{
 				case 0:
-					map[location[0]][location[1] - 1] = map_value;
+					map[location[0]][location[1] - 1]=(map[location[0]][location[1]-1] == -1) ? map_value : map[location[0]][location[1]-1];
+					blocked[i] = map[location[0]][location[1]-1];
 					break;
 				case 1:
-					map[location[0] + 1][location[1]] = map_value;
+					map[location[0] + 1][location[1]]=(map[location[0] + 1][location[1]] == -1) ? map_value : map[location[0] + 1][location[1]];
+					blocked[i] = map[location[0] + 1][location[1]];
 
 					break;
 				case 2:
-					map[location[0]][location[1]+1] = map_value;
+					map[location[0]][location[1] + 1]=(map[location[0]][location[1]+1] == -1) ? map_value : map[location[0]][location[1]+1];
+					blocked[i] = map[location[0]][location[1]+1];
 
 					break;
 				case 3:
-					map[location[0]-1][location[1]] = map_value;
+					map[location[0] - 1][location[1]]=(map[location[0] - 1][location[1]] == -1) ? map_value : map[location[0] - 1][location[1]];
+					blocked[i] = map[location[0] - 1][location[1]];
 
 					break;
 				default:
@@ -203,18 +210,22 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 				switch (i)
 				{
 				case 0:
-					map[location[0]+1][location[1] ] = map_value;
+					map[location[0] + 1][location[1]]=(map[location[0] + 1][location[1]] == -1) ? map_value : map[location[0] + 1][location[1]];
+					blocked[i] = map[location[0] + 1][location[1]];
 					break;
 				case 1:
-					map[location[0]][location[1]+1] = map_value;
+					map[location[0]][location[1] + 1]=(map[location[0]][location[1]+1] == -1) ? map_value : map[location[0]][location[1]+1];
+					blocked[i] = map[location[0]][location[1]+1];
 
 					break;
 				case 2:
-					map[location[0] - 1][location[1]] = map_value;
+					map[location[0] - 1][location[1]]=(map[location[0] - 1][location[1]] == -1) ? map_value : map[location[0] - 1][location[1]];
+					blocked[i] = map[location[0] - 1][location[1]];
 
 					break;
 				case 3:
-					map[location[0]][location[1] - 1] = map_value;
+					map[location[0]][location[1]-1]=(map[location[0]][location[1]-1] == -1 )? map_value : map[location[0]][location[1]-1];
+					blocked[i] = map[location[0]][location[1]-1];
 
 					break;
 				default:
@@ -231,18 +242,21 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 				switch (i)
 				{
 				case 0:
-					map[location[0]][location[1]+1] = map_value;
+					map[location[0]][location[1] + 1]=(map[location[0]][location[1]+1] == -1) ? map_value : map[location[0]][location[1]+1];
+					blocked[i] = map[location[0]][location[1]+1];
 					break;
 				case 1:
-					map[location[0]-1][location[1]] = map_value;
-
+					map[location[0]-1][location[1]]=(map[location[0] - 1][location[1]] == -1) ? map_value : map[location[0] - 1][location[1]];
+					blocked[i] = map[location[0] - 1][location[1]];
 					break;
 				case 2:
-					map[location[0]][location[1] - 1] = map_value;
+					map[location[0]][location[1] -1]=(map[location[0]][location[1]-1] == -1) ? map_value : map[location[0]][location[1]-1];
+					blocked[i] = map[location[0]][location[1]-1];
 
 					break;
 				case 3:
-					map[location[0] + 1][location[1]] = map_value;
+					map[location[0]+1][location[1] ]=(map[location[0] + 1][location[1]] == -1) ? map_value : map[location[0] +1 ][location[1]];
+					blocked[i] = map[location[0] + 1][location[1]];
 					break;
 				default:
 					break;
@@ -253,14 +267,10 @@ void update_map(WbDeviceTag infrared_sensors[], int orientation, int map[][MATRI
 	default:
 		break;
 	}
-	if (!goal_location[0]==-1)
-	{
-		map[goal_location[0]][goal_location[1]] = 3;
-	}
 }
 
 void locate_forward(int orientation, int map[][MATRIX_LIMIT], int location[]) {
-	map[location[0]][location[1]] = 1;
+	map[location[0]][location[1]] = 0;
 	printf("%d,%d\n", location[0], location[1]);
 	switch (orientation)
 	{
@@ -332,14 +342,14 @@ int main(int argc, char** argv) {
 	init_map(&map);
 	int location[2] = { MATRIX_LIMIT / 2,MATRIX_LIMIT / 2 };
 	int initial_location[2] = {location[0],location[1]};
+	int done_mapping=0;
 	int goal_location[2] = { -1,-1 };
 	map[location[0]][location[1]] = 1;
 	enable_sensors(camera,left_sensor, right_sensor, &infrared_sensors);
-	double sensors_previous_position[2] = {0,0 };
 	double before_movement_sensor_state[2] = { 0,0 };
 
-	wb_motor_set_velocity(left_motor, 0.1 * MAX_SPEED);
-	wb_motor_set_velocity(right_motor, 0.1 * MAX_SPEED);
+	wb_motor_set_velocity(left_motor, 0.3 * MAX_SPEED);
+	wb_motor_set_velocity(right_motor, 0.3 * MAX_SPEED);
 
 
 	/*
@@ -364,9 +374,17 @@ int main(int argc, char** argv) {
 		  * Enter here functions to send actuator commands, like:
 		  * wb_motor_set_position(my_actuator, 10.0);
 		  */
-		if (stopped(left_motor, left_sensor, right_motor, right_sensor))
+		if (stopped(left_motor, left_sensor, right_motor, right_sensor)&&!done_mapping)
 		{
-			is_goal(camera);
+			if (location[0]==initial_location[0]&&location[1]==initial_location[1]&&goal_location[0] != -1)
+			{
+				done_mapping = 1;
+			}
+			if (is_goal(camera)) {
+				locate_goal(orientation,&goal_location,location);
+				map[goal_location[0]][goal_location[1]]=3;
+				printf("goal!");
+			}
 			update_map(infrared_sensors, orientation, &map, location, &blocked, goal_location);
 			
 			printf("%d,%d,%d,%d\n", blocked[0], blocked[1], blocked[2], blocked[3]);
@@ -440,8 +458,6 @@ int main(int argc, char** argv) {
 			//turn(left_motor, right_motor, 0, &before_movement_sensor_state);
 		}
 
-	sensors_previous_position[0] = wb_position_sensor_get_value(left_sensor);
-	sensors_previous_position[1] = wb_position_sensor_get_value(right_sensor);
 	};
 
 	/* Enter your cleanup code here */
@@ -488,3 +504,6 @@ if[i['x'], i['y']] not in visitedand i['x'] >= 0 and i['x'] < len(matrix) and i[
 
 		print(next([], 0, 1))
 		*/
+
+
+
