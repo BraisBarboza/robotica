@@ -1,6 +1,5 @@
 #pragma config(StandardModel, "EV3_REMBOT")
 int currentPriority=0;
-int defaultLight=1000;//SIMULATION ONLYYYYYYYYYYYYYYYYYYYYYYY
 TSemaphore semaforo;
 int canIWork(int asked_priority){
 	int value;
@@ -35,46 +34,46 @@ int measure(){
 	int valor=0;
 	clearTimer(T1);
 	tiempo= getTimerValue(T1);
-  while(tiempo<1000){
-  	valor=valor+SensorValue[sonarSensor];
-  	i++;
-  	tiempo= getTimerValue(T1);
-  }
-  valor=valor/i;
-  return valor;
+	while(tiempo<1000){
+		valor=valor+SensorValue[sonarSensor];
+		i++;
+		tiempo= getTimerValue(T1);
+	}
+	valor=valor/i;
+	return valor;
 }
 
 task buscarPared(){
-	const int LimitDistance = 35;
+	const int LimitDistance = 25;
 	int currentDistance = 0;
 	int const myPriority=0;
 	while(true){
 		if(canIWork(myPriority)){
 			currentDistance= measure();
 			while(currentDistance>LimitDistance){
-  			setMotorSpeed(leftMotor, 50);
+				setMotorSpeed(leftMotor, 50);
 				setMotorSpeed(rightMotor, 50);
 				currentDistance=measure();
-  		}
-  		doneWorking(myPriority);
+			}
+			doneWorking(myPriority);
 		}else abortTimeslice();
 	}
 }
 
 task seguirPared(){
-	const int LimitDistance = 35;
+	const int LimitDistance = 25;
 	int currentDistance=1;
 	int const myPriority=1;
 	int angle_before=0;
-	int correction=-90;
+	int correction=-70;
 	int time;
 	while(true){
 		if(canIWork(myPriority)){
 			currentDistance=SensorValue[sonarSensor];
 			if (currentDistance<=LimitDistance){
-      	resetGyro(gyroSensor);
-      	angle_before=getGyroDegrees(gyroSensor);
-				while(angle_before<90){
+				resetGyro(gyroSensor);
+				angle_before=getGyroDegrees(gyroSensor);
+				while(angle_before<60){
 					currentDistance=SensorValue[sonarSensor];
 					angle_before=getGyroDegrees(gyroSensor);
 					setMotorSpeed(leftMotor, 20);
@@ -84,7 +83,7 @@ task seguirPared(){
 				clearTimer(T2);
 				currentDistance=SensorValue[sonarSensor];
 				time=time1[T2];
-				while(currentDistance>LimitDistance && time<3000){
+				while(currentDistance>LimitDistance && time<2000){
 					setMotorSpeed(leftMotor, 20);
 					setMotorSpeed(rightMotor, 20);
 					currentDistance=SensorValue[sonarSensor];
@@ -92,9 +91,9 @@ task seguirPared(){
 				}
 				resetGyro(gyroSensor);
 				angle_before=getGyroDegrees(gyroSensor);
-				while(angle_before>-90&& currentDistance>LimitDistance){
-					setMotorSpeed(leftMotor, -20  );
-					setMotorSpeed(rightMotor, 20  );
+				while(angle_before>-80&& currentDistance>LimitDistance+15){
+					setMotorSpeed(leftMotor, -15  );
+					setMotorSpeed(rightMotor, 15  );
 					angle_before=getGyroDegrees(gyroSensor);
 					currentDistance=SensorValue[sonarSensor];
 				}
@@ -105,25 +104,26 @@ task seguirPared(){
 	}
 }
 task irLuz(){
-	int const myPriority=2;
-	int currentLight=0;
-	int lightSeen=100;
+	int const myPriority=2, umbral = 25,umbralStop = 30;
+	float currentLight=100;
 	while(true){
 		currentLight=getColorAmbient(colorSensor);
-		if(getColorAmbient(colorSensor)>defaultLight){
+		writeDebugStreamLine("Valor recogido por el sensor de luz= %f\n ", currentLight);
+
+		if (currentLight > umbral){
 			if (canIWork(myPriority)){
-				while(getColorAmbient(colorSensor)<lightSeen){
-					setMotorSpeed(leftMotor, 30);
-					setMotorSpeed(rightMotor, 30);
-				}
+					setMotorSpeed(leftMotor, 0 );
+					setMotorSpeed(rightMotor, 0  );
 				doneWorking(myPriority);
 			}
 		}else abortTimeslice();
 	}
 }
+
+
 task escapar(){
 	int const myPriority=3;
-	int minDistance=30;
+	int minDistance=20;
 	int currentDistance=0;
 	int touching=0;
 	while(true){
@@ -143,7 +143,7 @@ task escapar(){
 }
 task main()
 {
-	//defaultLight=getColorAmbient(colorSensor);
+
 	semaphoreInitialize(semaforo);
 	clearDebugStream();
 	startTask(buscarPared);
