@@ -1,0 +1,16 @@
+﻿  refuerzo_vs.c
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(92,25): warning C4013: 'rand' sin definir; se supone que extern devuelve como resultado int
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(92,38): warning C4013: 'select_action' sin definir; se supone que extern devuelve como resultado int
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(112,26): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(119,2): warning C4013: 'srand' sin definir; se supone que extern devuelve como resultado int
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(119,8): warning C4013: 'time' sin definir; se supone que extern devuelve como resultado int
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(144,34): warning C4047: 'función': 'WbDeviceTag *' es distinto en los niveles de direccionamiento indirecto de 'WbDeviceTag (*)[4]'
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(144,17): warning C4024: 'enable_sensors': tipos distintos para el parámetro formal y el parámetro real 1
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(169,49): warning C4047: 'función': 'double *' es distinto en los niveles de direccionamiento indirecto de 'double (*)[4]'
+C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.c(169,35): warning C4024: 'update_q': tipos distintos para el parámetro formal y el parámetro real 5
+  Generando código
+  1 of 10 functions (10.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Generación de código finalizada
+  refuerzo_vs.vcxproj -> C:\Users\brais\OneDrive\Documentos\Repos\robotica\controllers\refuerzo_vs\refuerzo_vs.exe
